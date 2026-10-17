@@ -1,0 +1,132 @@
+{
+ "_origen": "Comfy-Org/ComfyUI nodes.py @ 5cc4b87 (2026-10-16)",
+ "CLIPTextEncode": {
+  "required": {
+   "text": "STRING",
+   "clip": "CLIP"
+  },
+  "optional": {},
+  "returns": [
+   "CONDITIONING"
+  ]
+ },
+ "VAEDecode": {
+  "required": {
+   "samples": "LATENT",
+   "vae": "VAE"
+  },
+  "optional": {},
+  "returns": [
+   "IMAGE"
+  ]
+ },
+ "CheckpointLoaderSimple": {
+  "required": {
+   "ckpt_name": "COMBO"
+  },
+  "optional": {},
+  "returns": [
+   "MODEL",
+   "CLIP",
+   "VAE"
+  ]
+ },
+ "ControlNetLoader": {
+  "required": {
+   "control_net_name": "COMBO"
+  },
+  "optional": {},
+  "returns": [
+   "CONTROL_NET"
+  ]
+ },
+ "ControlNetApplyAdvanced": {
+  "required": {
+   "positive": "CONDITIONING",
+   "negative": "CONDITIONING",
+   "control_net": "CONTROL_NET",
+   "image": "IMAGE",
+   "strength": "FLOAT",
+   "start_percent": "FLOAT",
+   "end_percent": "FLOAT"
+  },
+  "optional": {
+   "vae": "VAE"
+  },
+  "returns": [
+   "CONDITIONING",
+   "CONDITIONING"
+  ]
+ },
+ "EmptyLatentImage": {
+  "required": {
+   "width": "INT",
+   "height": "INT",
+   "batch_size": "INT"
+  },
+  "optional": {},
+  "returns": [
+   "LATENT"
+  ]
+ },
+ "KSampler": {
+  "required": {
+   "model": "MODEL",
+   "seed": "INT",
+   "steps": "INT",
+   "cfg": "FLOAT",
+   "sampler_name": "SAMPLERS",
+   "scheduler": "SCHEDULERS",
+   "positive": "CONDITIONING",
+   "negative": "CONDITIONING",
+   "latent_image": "LATENT",
+   "denoise": "FLOAT"
+  },
+  "optional": {},
+  "returns": [
+   "LATENT"
+  ]
+ },
+ "SaveImage": {
+  "required": {
+   "images": "IMAGE",
+   "filename_prefix": "STRING"
+  },
+  "optional": {},
+  "returns": [
+   "IMAGE"
+  ]
+ },
+ "LoadImage": {
+  "required": {
+   "image": "COMBO"
+  },
+  "optional": {},
+  "returns": [
+   "IMAGE",
+   "MASK"
+  ]
+ },
+ "ImageScale": {
+  "required": {
+   "image": "IMAGE",
+   "upscale_method": "upscale_methods",
+   "width": "INT",
+   "height": "INT",
+   "crop": "crop_methods"
+  },
+  "optional": {},
+  "returns": [
+   "IMAGE"
+  ]
+ },
+ "ImageInvert": {
+  "required": {
+   "image": "IMAGE"
+  },
+  "optional": {},
+  "returns": [
+   "IMAGE"
+  ]
+ }
+}
