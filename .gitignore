@@ -1,6 +1,6 @@
 __pycache__/
 .pytest_cache/
-motor/resultados/
+engine/results/
 .DS_Store
 node_modules/
 .wrangler/

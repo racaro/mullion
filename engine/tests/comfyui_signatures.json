@@ -1,5 +1,5 @@
 {
- "_origen": "Comfy-Org/ComfyUI nodes.py @ 5cc4b87 (2026-10-16)",
+ "_source": "Comfy-Org/ComfyUI nodes.py @ 5cc4b87 (2026-10-16)",
  "CLIPTextEncode": {
   "required": {
    "text": "STRING",

@@ -1,22 +1,31 @@
-# Boceto a render
+# Mullion
 
-Herramienta para interioristas: subes un boceto, un asistente te ayuda a describirlo y obtienes vistas realistas que respetan la composición.
+**From sketch to render.** Upload a sketch of a space, let an assistant help you describe it, and get photorealistic views that keep your layout.
 
-Nombre provisional hasta decidir la marca.
+For anyone who draws spaces: architects, interior designers, contractors, kitchen and joinery studios.
 
-## Arquitectura
+| Locale | Tagline |
+| --- | --- |
+| English (default) | Sketch it, see it. |
+| Spanish | Si lo veo, lo creo. |
+
+## Architecture
 
 ```
-Navegador → Worker de Cloudflare (panel + API + login con Google) → D1 / R2
+Browser → Cloudflare Worker (web app + API + Google sign-in) → D1 / R2
                      ↓ Queue
-               Cloudflare Tunnel → ComfyUI (Mac mini en el piloto, GPU en la nube después)
+              Cloudflare Tunnel → ComfyUI (Mac mini for the pilot, cloud GPU later)
 ```
 
-## Estado
+## Languages
 
-| Paso | Carpeta | Estado |
+The codebase, docs and API are in English. The web app ships in **English and Spanish**: English is the default, and the locale comes from the user's choice, falling back to the browser's language. Option labels for the room brief already exist in both languages (`engine/brief.py`, `catalog(locale)`); the web app will keep its own strings in one file per locale.
+
+## Status
+
+| Step | Folder | Status |
 | --- | --- | --- |
-| 1. Validar el motor de render | `motor/` | Listo para probar en el Mac |
-| 2. Base: panel, login, D1, R2, cola | `web/` | Pendiente del resultado del paso 1 |
-| 3. Asistente que crea el prompt | `web/` | Pendiente |
-| 4. Producto y piloto | | Pendiente |
+| 1. Validate the render engine | `engine/` | Ready to run on the Mac |
+| 2. Foundation: web app, sign-in, D1, R2, queue | `web/` | Waiting on step 1 |
+| 3. Prompt assistant (chat) | `web/` | Pending |
+| 4. Product and pilot | | Pending |
