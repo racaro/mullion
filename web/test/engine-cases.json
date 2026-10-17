@@ -1,0 +1,462 @@
+{
+ "_generated": "by engine/export.py — do not edit",
+ "prompts": [
+  {
+   "brief": {
+    "room": "living_room",
+    "style": "contemporary",
+    "lighting": "morning",
+    "materials": [],
+    "details": ""
+   },
+   "positive": "photorealistic interior design photography, professional architectural photo, high detail, 8k, living room, contemporary style, neutral palette, refined finishes, soft natural morning light through the windows, wide angle lens, eye level, sharp focus",
+   "negative": "blurry, low quality, distorted perspective, warped walls, bent lines, extra furniture, people, person, human figure, statue, mannequin, text, watermark, logo, cartoon, sketch, drawing, lowres, oversaturated"
+  },
+  {
+   "brief": {
+    "room": "kitchen",
+    "style": "industrial",
+    "lighting": "golden_hour",
+    "materials": [
+     "floor_microcement",
+     "metal_black",
+     "floor_microcement"
+    ],
+    "details": " open shelves "
+   },
+   "positive": "photorealistic interior design photography, professional architectural photo, high detail, 8k, kitchen, industrial style, exposed concrete, black metal details, grey microcement floor, matte black metal details, warm golden hour sunlight, long soft shadows, open shelves, wide angle lens, eye level, sharp focus",
+   "negative": "blurry, low quality, distorted perspective, warped walls, bent lines, extra furniture, people, person, human figure, statue, mannequin, text, watermark, logo, cartoon, sketch, drawing, lowres, oversaturated"
+  }
+ ],
+ "workflows": [
+  {
+   "params": {
+    "sketch_image": "sketch.png",
+    "checkpoint": "base.safetensors",
+    "controlnet": "lineart.pth",
+    "positive": "living room",
+    "negative": "blurry",
+    "width": 768,
+    "height": 560,
+    "seed": 42,
+    "controlnet_strength": 0.9,
+    "controlnet_end": 1.0,
+    "steps": 25,
+    "cfg": 7.0,
+    "sampler": "dpmpp_2m",
+    "scheduler": "karras",
+    "invert_sketch": true,
+    "erase_mask": null,
+    "output_prefix": "mullion"
+   },
+   "workflow": {
+    "1": {
+     "class_type": "CheckpointLoaderSimple",
+     "inputs": {
+      "ckpt_name": "base.safetensors"
+     }
+    },
+    "2": {
+     "class_type": "LoadImage",
+     "inputs": {
+      "image": "sketch.png"
+     }
+    },
+    "3": {
+     "class_type": "ImageScale",
+     "inputs": {
+      "image": [
+       "2",
+       0
+      ],
+      "upscale_method": "lanczos",
+      "width": 768,
+      "height": 560,
+      "crop": "disabled"
+     }
+    },
+    "4": {
+     "class_type": "ImageInvert",
+     "inputs": {
+      "image": [
+       "3",
+       0
+      ]
+     }
+    },
+    "5": {
+     "class_type": "CLIPTextEncode",
+     "inputs": {
+      "text": "living room",
+      "clip": [
+       "1",
+       1
+      ]
+     }
+    },
+    "6": {
+     "class_type": "CLIPTextEncode",
+     "inputs": {
+      "text": "blurry",
+      "clip": [
+       "1",
+       1
+      ]
+     }
+    },
+    "7": {
+     "class_type": "ControlNetLoader",
+     "inputs": {
+      "control_net_name": "lineart.pth"
+     }
+    },
+    "8": {
+     "class_type": "ControlNetApplyAdvanced",
+     "inputs": {
+      "positive": [
+       "5",
+       0
+      ],
+      "negative": [
+       "6",
+       0
+      ],
+      "control_net": [
+       "7",
+       0
+      ],
+      "image": [
+       "4",
+       0
+      ],
+      "strength": 0.9,
+      "start_percent": 0.0,
+      "end_percent": 1.0,
+      "vae": [
+       "1",
+       2
+      ]
+     }
+    },
+    "9": {
+     "class_type": "EmptyLatentImage",
+     "inputs": {
+      "width": 768,
+      "height": 560,
+      "batch_size": 1
+     }
+    },
+    "10": {
+     "class_type": "KSampler",
+     "inputs": {
+      "model": [
+       "1",
+       0
+      ],
+      "seed": 42,
+      "steps": 25,
+      "cfg": 7.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "positive": [
+       "8",
+       0
+      ],
+      "negative": [
+       "8",
+       1
+      ],
+      "latent_image": [
+       "9",
+       0
+      ],
+      "denoise": 1.0
+     }
+    },
+    "11": {
+     "class_type": "VAEDecode",
+     "inputs": {
+      "samples": [
+       "10",
+       0
+      ],
+      "vae": [
+       "1",
+       2
+      ]
+     }
+    },
+    "12": {
+     "class_type": "SaveImage",
+     "inputs": {
+      "images": [
+       "11",
+       0
+      ],
+      "filename_prefix": "mullion"
+     }
+    }
+   }
+  },
+  {
+   "params": {
+    "sketch_image": "s.jpg",
+    "checkpoint": "base.safetensors",
+    "controlnet": "lineart.pth",
+    "positive": "p",
+    "negative": "n",
+    "width": 512,
+    "height": 768,
+    "seed": 7,
+    "controlnet_strength": 0.8,
+    "controlnet_end": 1.0,
+    "steps": 25,
+    "cfg": 7.0,
+    "sampler": "dpmpp_2m",
+    "scheduler": "karras",
+    "invert_sketch": false,
+    "erase_mask": "m.png",
+    "output_prefix": "mullion/abc"
+   },
+   "workflow": {
+    "1": {
+     "class_type": "CheckpointLoaderSimple",
+     "inputs": {
+      "ckpt_name": "base.safetensors"
+     }
+    },
+    "2": {
+     "class_type": "LoadImage",
+     "inputs": {
+      "image": "s.jpg"
+     }
+    },
+    "3": {
+     "class_type": "ImageScale",
+     "inputs": {
+      "image": [
+       "2",
+       0
+      ],
+      "upscale_method": "lanczos",
+      "width": 512,
+      "height": 768,
+      "crop": "disabled"
+     }
+    },
+    "13": {
+     "class_type": "LoadImage",
+     "inputs": {
+      "image": "m.png"
+     }
+    },
+    "14": {
+     "class_type": "ImageScale",
+     "inputs": {
+      "image": [
+       "13",
+       0
+      ],
+      "upscale_method": "nearest-exact",
+      "width": 512,
+      "height": 768,
+      "crop": "disabled"
+     }
+    },
+    "15": {
+     "class_type": "ImageToMask",
+     "inputs": {
+      "image": [
+       "14",
+       0
+      ],
+      "channel": "red"
+     }
+    },
+    "16": {
+     "class_type": "EmptyImage",
+     "inputs": {
+      "width": 512,
+      "height": 768,
+      "batch_size": 1,
+      "color": 0
+     }
+    },
+    "17": {
+     "class_type": "ImageCompositeMasked",
+     "inputs": {
+      "destination": [
+       "3",
+       0
+      ],
+      "source": [
+       "16",
+       0
+      ],
+      "x": 0,
+      "y": 0,
+      "resize_source": false,
+      "mask": [
+       "15",
+       0
+      ]
+     }
+    },
+    "5": {
+     "class_type": "CLIPTextEncode",
+     "inputs": {
+      "text": "p",
+      "clip": [
+       "1",
+       1
+      ]
+     }
+    },
+    "6": {
+     "class_type": "CLIPTextEncode",
+     "inputs": {
+      "text": "n",
+      "clip": [
+       "1",
+       1
+      ]
+     }
+    },
+    "7": {
+     "class_type": "ControlNetLoader",
+     "inputs": {
+      "control_net_name": "lineart.pth"
+     }
+    },
+    "8": {
+     "class_type": "ControlNetApplyAdvanced",
+     "inputs": {
+      "positive": [
+       "5",
+       0
+      ],
+      "negative": [
+       "6",
+       0
+      ],
+      "control_net": [
+       "7",
+       0
+      ],
+      "image": [
+       "17",
+       0
+      ],
+      "strength": 0.8,
+      "start_percent": 0.0,
+      "end_percent": 1.0,
+      "vae": [
+       "1",
+       2
+      ]
+     }
+    },
+    "9": {
+     "class_type": "EmptyLatentImage",
+     "inputs": {
+      "width": 512,
+      "height": 768,
+      "batch_size": 1
+     }
+    },
+    "10": {
+     "class_type": "KSampler",
+     "inputs": {
+      "model": [
+       "1",
+       0
+      ],
+      "seed": 7,
+      "steps": 25,
+      "cfg": 7.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "positive": [
+       "8",
+       0
+      ],
+      "negative": [
+       "8",
+       1
+      ],
+      "latent_image": [
+       "9",
+       0
+      ],
+      "denoise": 1.0
+     }
+    },
+    "11": {
+     "class_type": "VAEDecode",
+     "inputs": {
+      "samples": [
+       "10",
+       0
+      ],
+      "vae": [
+       "1",
+       2
+      ]
+     }
+    },
+    "12": {
+     "class_type": "SaveImage",
+     "inputs": {
+      "images": [
+       "11",
+       0
+      ],
+      "filename_prefix": "mullion/abc"
+     }
+    }
+   }
+  }
+ ],
+ "fitSize": [
+  {
+   "size": [
+    2048,
+    1489
+   ],
+   "fit": [
+    768,
+    560
+   ]
+  },
+  {
+   "size": [
+    1489,
+    2048
+   ],
+   "fit": [
+    560,
+    768
+   ]
+  },
+  {
+   "size": [
+    1000,
+    1000
+   ],
+   "fit": [
+    768,
+    768
+   ]
+  },
+  {
+   "size": [
+    100,
+    3000
+   ],
+   "fit": [
+    256,
+    768
+   ]
+  }
+ ]
+}

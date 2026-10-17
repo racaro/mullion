@@ -19,13 +19,13 @@ Browser → Cloudflare Worker (web app + API + Google sign-in) → D1 / R2
 
 ## Languages
 
-The codebase, docs and API are in English. The web app ships in **English and Spanish**: English is the default, and the locale comes from the user's choice, falling back to the browser's language. Option labels for the room brief already exist in both languages (`engine/brief.py`, `catalog(locale)`); the web app will keep its own strings in one file per locale.
+The codebase, docs and API are in English. The web app ships in **English and Spanish**: English is the default, and the locale comes from the user's choice, falling back to the browser's language. Option labels for the room brief live in both languages in `engine/brief.py` and reach the web app through `engine/export.py`; the web app keeps its own strings in one file per locale (`web/public/i18n/`).
 
 ## Status
 
 | Step | Folder | Status |
 | --- | --- | --- |
-| 1. Validate the render engine | `engine/` | Ready to run on the Mac |
-| 2. Foundation: web app, sign-in, D1, R2, queue | `web/` | Waiting on step 1 |
+| 1. Validate the render engine | `engine/` | Done: ControlNet lineart at 0.8 keeps the layout; erase mask removes people |
+| 2. Foundation: web app, sign-in, D1, R2, queue | `web/` | Runs locally; deploy pending |
 | 3. Prompt assistant (chat) | `web/` | Pending |
 | 4. Product and pilot | | Pending |

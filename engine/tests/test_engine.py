@@ -287,3 +287,11 @@ def test_bench_reports_missing_controlnet(server, tmp_path, monkeypatch):
     monkeypatch.setattr(sys, "argv", ["bench.py", "--url", server, "--sketch", str(sketch), "--checkpoint", CHECKPOINTS[0], "--controlnet", "other.pth"])
     with pytest.raises(SystemExit, match="other.pth"):
         bench.main()
+
+
+# ---------- export to the web app ---------------------------------------------------
+def test_web_export_is_up_to_date():
+    import export
+
+    for path, data in ((export.ENGINE_FILE, export.engine_data()), (export.CASES_FILE, export.cases())):
+        assert path.read_text(encoding="utf-8") == export.dump(data), f"{path.name} is stale: run python3 export.py"

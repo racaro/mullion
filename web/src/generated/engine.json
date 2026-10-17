@@ -1,0 +1,225 @@
+{
+ "_generated": "by engine/export.py — do not edit",
+ "rooms": {
+  "living_room": {
+   "prompt": "living room",
+   "label": {
+    "en": "Living room",
+    "es": "Salón"
+   }
+  },
+  "kitchen": {
+   "prompt": "kitchen",
+   "label": {
+    "en": "Kitchen",
+    "es": "Cocina"
+   }
+  },
+  "bedroom": {
+   "prompt": "bedroom",
+   "label": {
+    "en": "Bedroom",
+    "es": "Dormitorio"
+   }
+  },
+  "bathroom": {
+   "prompt": "bathroom",
+   "label": {
+    "en": "Bathroom",
+    "es": "Baño"
+   }
+  },
+  "dining_room": {
+   "prompt": "dining room",
+   "label": {
+    "en": "Dining room",
+    "es": "Comedor"
+   }
+  },
+  "home_office": {
+   "prompt": "home office",
+   "label": {
+    "en": "Home office",
+    "es": "Despacho"
+   }
+  },
+  "entrance_hall": {
+   "prompt": "entrance hall",
+   "label": {
+    "en": "Entrance hall",
+    "es": "Recibidor"
+   }
+  },
+  "retail": {
+   "prompt": "retail shop interior",
+   "label": {
+    "en": "Shop",
+    "es": "Local comercial"
+   }
+  }
+ },
+ "styles": {
+  "scandinavian": {
+   "prompt": "scandinavian style, light wood, clean lines, cozy minimalism",
+   "label": {
+    "en": "Scandinavian",
+    "es": "Nórdico"
+   }
+  },
+  "industrial": {
+   "prompt": "industrial style, exposed concrete, black metal details",
+   "label": {
+    "en": "Industrial",
+    "es": "Industrial"
+   }
+  },
+  "mediterranean": {
+   "prompt": "mediterranean style, lime plaster walls, natural textures, terracotta accents",
+   "label": {
+    "en": "Mediterranean",
+    "es": "Mediterráneo"
+   }
+  },
+  "contemporary": {
+   "prompt": "contemporary style, neutral palette, refined finishes",
+   "label": {
+    "en": "Contemporary",
+    "es": "Contemporáneo"
+   }
+  },
+  "classic": {
+   "prompt": "classic style, moldings, elegant traditional furniture",
+   "label": {
+    "en": "Classic",
+    "es": "Clásico"
+   }
+  },
+  "japandi": {
+   "prompt": "japandi style, natural materials, muted tones, minimal decor",
+   "label": {
+    "en": "Japandi",
+    "es": "Japandi"
+   }
+  }
+ },
+ "materials": {
+  "floor_oak": {
+   "prompt": "light oak wooden floor",
+   "label": {
+    "en": "Light oak floor",
+    "es": "Suelo de roble claro"
+   }
+  },
+  "floor_walnut": {
+   "prompt": "dark walnut wooden floor",
+   "label": {
+    "en": "Walnut floor",
+    "es": "Suelo de nogal"
+   }
+  },
+  "floor_marble": {
+   "prompt": "white marble floor",
+   "label": {
+    "en": "White marble floor",
+    "es": "Suelo de mármol blanco"
+   }
+  },
+  "floor_microcement": {
+   "prompt": "grey microcement floor",
+   "label": {
+    "en": "Microcement floor",
+    "es": "Suelo de microcemento"
+   }
+  },
+  "floor_encaustic": {
+   "prompt": "patterned encaustic tile floor",
+   "label": {
+    "en": "Encaustic tile floor",
+    "es": "Suelo hidráulico"
+   }
+  },
+  "walls_white": {
+   "prompt": "white painted walls",
+   "label": {
+    "en": "White walls",
+    "es": "Paredes blancas"
+   }
+  },
+  "walls_lime": {
+   "prompt": "textured lime plaster walls",
+   "label": {
+    "en": "Lime plaster walls",
+    "es": "Paredes de cal"
+   }
+  },
+  "walls_brick": {
+   "prompt": "exposed brick wall",
+   "label": {
+    "en": "Exposed brick",
+    "es": "Ladrillo visto"
+   }
+  },
+  "counter_marble": {
+   "prompt": "marble countertop",
+   "label": {
+    "en": "Marble countertop",
+    "es": "Encimera de mármol"
+   }
+  },
+  "counter_wood": {
+   "prompt": "solid wood countertop",
+   "label": {
+    "en": "Wood countertop",
+    "es": "Encimera de madera"
+   }
+  },
+  "textile_linen": {
+   "prompt": "linen upholstery",
+   "label": {
+    "en": "Linen upholstery",
+    "es": "Tapicería de lino"
+   }
+  },
+  "metal_black": {
+   "prompt": "matte black metal details",
+   "label": {
+    "en": "Black metal details",
+    "es": "Detalles en metal negro"
+   }
+  }
+ },
+ "lighting": {
+  "morning": {
+   "prompt": "soft natural morning light through the windows",
+   "label": {
+    "en": "Morning light",
+    "es": "Luz de mañana"
+   }
+  },
+  "golden_hour": {
+   "prompt": "warm golden hour sunlight, long soft shadows",
+   "label": {
+    "en": "Golden hour",
+    "es": "Atardecer"
+   }
+  },
+  "overcast": {
+   "prompt": "diffused overcast daylight, even soft light",
+   "label": {
+    "en": "Overcast",
+    "es": "Nublado"
+   }
+  },
+  "evening": {
+   "prompt": "evening ambience, warm interior lamps, cozy lighting",
+   "label": {
+    "en": "Evening",
+    "es": "Noche"
+   }
+  }
+ },
+ "quality": "photorealistic interior design photography, professional architectural photo, high detail, 8k",
+ "camera": "wide angle lens, eye level, sharp focus",
+ "negative": "blurry, low quality, distorted perspective, warped walls, bent lines, extra furniture, people, person, human figure, statue, mannequin, text, watermark, logo, cartoon, sketch, drawing, lowres, oversaturated",
+ "maxDetails": 300
+}

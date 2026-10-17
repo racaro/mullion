@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mullion</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="bar">
+    <a class="brand" href="/">Mullion</a>
+    <div class="bar-actions">
+      <select id="locale" aria-label="Language">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+      </select>
+      <form id="sign-out" method="post" action="/auth/logout" hidden>
+        <span id="user-name"></span>
+        <button type="submit" class="link" data-i18n="signOut"></button>
+      </form>
+    </div>
+  </header>
+
+  <main>
+    <section id="welcome" class="welcome" hidden>
+      <h1 data-i18n="tagline"></h1>
+      <p data-i18n="intro"></p>
+      <p id="signin-failed" class="error" data-i18n="signInFailed" hidden></p>
+      <a class="button" href="/auth/google" data-i18n="signIn"></a>
+    </section>
+
+    <section id="studio" hidden>
+      <form id="new-render" class="panel">
+        <h2 data-i18n="newRender"></h2>
+
+        <label class="field">
+          <span data-i18n="sketch"></span>
+          <input type="file" name="sketch" accept="image/png,image/jpeg" required>
+          <small data-i18n="sketchHint"></small>
+        </label>
+
+        <div id="eraser" class="eraser" hidden>
+          <div class="eraser-head">
+            <strong data-i18n="erase"></strong>
+            <button type="button" id="clear-erase" class="link" data-i18n="clearErase"></button>
+          </div>
+          <small data-i18n="eraseHint"></small>
+          <canvas id="sketch-canvas"></canvas>
+        </div>
+
+        <div class="grid">
+          <label class="field"><span data-i18n="room"></span><select name="room"></select></label>
+          <label class="field"><span data-i18n="style"></span><select name="style"></select></label>
+          <label class="field"><span data-i18n="lighting"></span><select name="lighting"></select></label>
+        </div>
+
+        <fieldset class="field">
+          <legend data-i18n="materials"></legend>
+          <div id="materials" class="chips"></div>
+        </fieldset>
+
+        <label class="field">
+          <span data-i18n="details"></span>
+          <textarea name="details" rows="2" maxlength="300"></textarea>
+        </label>
+
+        <p id="form-error" class="error" hidden></p>
+        <button type="submit" class="button" data-i18n="submit"></button>
+      </form>
+
+      <section class="renders">
+        <h2 data-i18n="renders"></h2>
+        <p id="empty" class="muted" data-i18n="empty" hidden></p>
+        <ul id="render-list"></ul>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

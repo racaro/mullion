@@ -1,0 +1,28 @@
+// Mullion web app: one Worker serves the pages, the API and Google sign-in, and consumes
+// the render queue (calls ComfyUI through Cloudflare Tunnel, protected by Cloudflare Access).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mullion",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": { "directory": "public", "binding": "ASSETS", "run_worker_first": ["/api/*", "/auth/*"] },
+  "d1_databases": [
+    // database_id: fill in after `wrangler d1 create mullion`
+    { "binding": "DB", "database_name": "mullion", "database_id": "00000000-0000-0000-0000-000000000000", "migrations_dir": "migrations" }
+  ],
+  "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "mullion" }],
+  "queues": {
+    "producers": [{ "binding": "RENDER_QUEUE", "queue": "mullion-renders" }],
+    // One render at a time: the Mac has a single GPU. Raise it with more ComfyUI machines.
+    "consumers": [{ "queue": "mullion-renders", "max_batch_size": 1, "max_concurrency": 1, "max_retries": 2 }]
+  },
+  "vars": {
+    // Public address of ComfyUI (the Tunnel hostname). Local development uses .dev.vars.
+    "COMFY_URL": "https://comfy.example.com",
+    "COMFY_CHECKPOINT": "v1-5-pruned-emaonly.safetensors",
+    "COMFY_CONTROLNET": "control_v11p_sd15_lineart.pth",
+    "CONTROLNET_STRENGTH": "0.8"
+  }
+  // Secrets (wrangler secret put …): GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
+  // CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET (Access service token for the Tunnel).
+}
