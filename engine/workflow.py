@@ -27,6 +27,7 @@ class RenderParams:
     sampler: str = "dpmpp_2m"
     scheduler: str = "karras"
     invert_sketch: bool = True  # line ControlNets expect white lines on black
+    erase_mask: str | None = None  # uploaded image, white where the sketch must be ignored (people, notes)
     output_prefix: str = "mullion"
 
 
@@ -45,6 +46,20 @@ def build_workflow(p: RenderParams) -> dict:
     if p.invert_sketch:
         workflow["4"] = {"class_type": "ImageInvert", "inputs": {"image": ["3", 0]}}
         control_image = ["4", 0]
+    if p.erase_mask:
+        # Paint the masked areas black (no lines) so ControlNet does not force a shape there.
+        workflow["13"] = {"class_type": "LoadImage", "inputs": {"image": p.erase_mask}}
+        workflow["14"] = {
+            "class_type": "ImageScale",
+            "inputs": {"image": ["13", 0], "upscale_method": "nearest-exact", "width": p.width, "height": p.height, "crop": "disabled"},
+        }
+        workflow["15"] = {"class_type": "ImageToMask", "inputs": {"image": ["14", 0], "channel": "red"}}
+        workflow["16"] = {"class_type": "EmptyImage", "inputs": {"width": p.width, "height": p.height, "batch_size": 1, "color": 0}}
+        workflow["17"] = {
+            "class_type": "ImageCompositeMasked",
+            "inputs": {"destination": control_image, "source": ["16", 0], "x": 0, "y": 0, "resize_source": False, "mask": ["15", 0]},
+        }
+        control_image = ["17", 0]
 
     workflow.update(
         {

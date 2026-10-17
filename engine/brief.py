@@ -64,7 +64,7 @@ CAMERA = "wide angle lens, eye level, sharp focus"
 
 NEGATIVE = (
     "blurry, low quality, distorted perspective, warped walls, bent lines, extra furniture, "
-    "people, text, watermark, logo, cartoon, sketch, drawing, lowres, oversaturated"
+    "people, person, human figure, statue, mannequin, text, watermark, logo, cartoon, sketch, drawing, lowres, oversaturated"
 )
 
 MAX_DETAILS = 300

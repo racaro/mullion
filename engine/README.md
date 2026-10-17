@@ -49,7 +49,7 @@ It renders **12 images**: 2 ControlNets × 3 strengths (0.6 · 0.8 · 1.0) × 2 
 
 If it cannot connect, try `--url http://127.0.0.1:8188` (the desktop app usually uses port 8000; a manual install uses 8188).
 
-Useful options: `--room kitchen`, `--style industrial`, `--lighting golden_hour`, `--materials floor_microcement,metal_black`. Run `python3 bench.py --help` for all of them.
+Useful options: `--erase-mask mask.png` (white over people or notes to ignore, black elsewhere), `--room kitchen`, `--style industrial`, `--lighting golden_hour`, `--materials floor_microcement,metal_black`. Run `python3 bench.py --help` for all of them.
 
 ## 5. Evaluate
 
@@ -75,6 +75,6 @@ Open `results/comparison.html`. For each image, check:
 | `workflow.py` | ComfyUI workflow with ControlNet, built only from stock nodes |
 | `client.py` | ComfyUI API client; the backend will reuse it |
 | `bench.py` | The bench and its comparison page |
-| `tests/` | 19 tests with a fake ComfyUI that validates the workflow against the real node signatures |
+| `tests/` | 21 tests with a fake ComfyUI that validates the workflow against the real node signatures |
 
 Standard library only, Python 3.9 or newer (the one that ships with macOS works). To run the tests: `pip3 install pytest && python3 -m pytest`.

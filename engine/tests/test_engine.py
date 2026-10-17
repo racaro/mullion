@@ -28,6 +28,7 @@ ALLOWED = {  # combo values copied from ComfyUI
     ("ImageScale", "crop"): ["disabled", "center"],
     ("KSampler", "sampler_name"): ["euler", "euler_ancestral", "dpmpp_2m", "dpmpp_2m_sde", "dpmpp_3m_sde"],
     ("KSampler", "scheduler"): ["normal", "karras", "exponential", "sgm_uniform", "simple"],
+    ("ImageToMask", "channel"): ["red", "green", "blue", "alpha"],
 }
 CHECKPOINTS = ["v1-5-pruned-emaonly.safetensors"]
 CONTROLNETS = ["control_v11p_sd15_lineart.pth", "control_v11p_sd15_scribble.pth"]
@@ -108,8 +109,8 @@ class FakeComfy(BaseHTTPRequestHandler):
     def do_POST(self):
         body = self.rfile.read(int(self.headers["Content-Length"]))
         if self.path == "/upload/image":
-            assert b'name="image"; filename="sketch.png"' in body
-            return self._reply(200, {"name": "sketch.png", "subfolder": "", "type": "input"})
+            name = body.split(b'name="image"; filename="', 1)[1].split(b'"', 1)[0].decode()
+            return self._reply(200, {"name": name, "subfolder": "", "type": "input"})
         if self.path == "/prompt":
             workflow = json.loads(body)["prompt"]
             for node in workflow.values():  # file check, like ComfyUI does
@@ -187,6 +188,15 @@ def test_workflow_without_invert_is_valid():
     assert validate(workflow) == []
 
 
+def test_workflow_erases_masked_areas_before_controlnet():
+    workflow = build_workflow(params(erase_mask="mask.png"))
+    assert workflow["13"]["inputs"]["image"] == "mask.png"
+    assert workflow["17"]["inputs"]["destination"] == ["4", 0]  # after inverting: masked areas end up black
+    assert workflow["8"]["inputs"]["image"] == ["17", 0]
+    assert validate(workflow) == []
+    assert "13" not in build_workflow(params())
+
+
 def test_workflow_passes_parameters():
     w = build_workflow(params(seed=7, controlnet_strength=0.6, width=512, height=768))
     assert w["10"]["inputs"]["seed"] == 7
@@ -255,6 +265,18 @@ def test_bench_end_to_end(server, tmp_path, monkeypatch):
     assert {w["10"]["inputs"]["seed"] for w in FakeComfy.received} == {42}  # same seed everywhere
     page = (out / "comparison.html").read_text()
     assert page.count("<figure>") == 9 and "Original sketch" in page
+
+
+def test_bench_sends_erase_mask(server, tmp_path, monkeypatch):
+    import bench
+
+    sketch, mask = tmp_path / "sketch.png", tmp_path / "mask.png"
+    sketch.write_bytes(png(100, 100))
+    mask.write_bytes(png(100, 100))
+    monkeypatch.setattr(sys, "argv", ["bench.py", "--url", server, "--sketch", str(sketch), "--checkpoint", CHECKPOINTS[0],
+                                      "--controlnet", CONTROLNETS[0], "--strengths", "1.0", "--erase-mask", str(mask), "--out", str(tmp_path / "res")])
+    assert bench.main() == 0
+    assert {w["13"]["inputs"]["image"] for w in FakeComfy.received} == {"mask.png"}
 
 
 def test_bench_reports_missing_controlnet(server, tmp_path, monkeypatch):

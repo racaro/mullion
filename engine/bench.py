@@ -41,6 +41,8 @@ def parse_args() -> argparse.Namespace:
     a.add_argument("--materials", type=csv_list, default=["floor_oak", "walls_white"])
     a.add_argument("--materials-b", type=csv_list, default=["floor_marble", "walls_lime"],
                    help="Second material set, to check that changing materials keeps the layout")
+    a.add_argument("--erase-mask", type=Path,
+                   help="Image the size of the sketch, white over what to ignore (people, notes), black elsewhere")
     a.add_argument("--no-invert", action="store_true", help="Use if your sketch already has white lines on black")
     a.add_argument("--out", type=Path, default=Path("results"))
     return a.parse_args()
@@ -97,6 +99,7 @@ def main() -> int:
 
         width, height = fit_size(*image_size(args.sketch))
         uploaded = client.upload_image(args.sketch)
+        erase_mask = client.upload_image(args.erase_mask) if args.erase_mask else None
         args.out.mkdir(parents=True, exist_ok=True)
         (args.out / args.sketch.name).write_bytes(args.sketch.read_bytes())
 
@@ -113,7 +116,7 @@ def main() -> int:
             workflow = build_workflow(RenderParams(
                 sketch_image=uploaded, checkpoint=args.checkpoint, controlnet=cn, positive=prompt, negative=negative,
                 width=width, height=height, seed=args.seed, controlnet_strength=strength, steps=args.steps,
-                invert_sketch=not args.no_invert, output_prefix=f"bench/{name}",
+                invert_sketch=not args.no_invert, erase_mask=erase_mask, output_prefix=f"bench/{name}",
             ))
             started = time.monotonic()
             path = client.generate(workflow, args.out, name)[0]

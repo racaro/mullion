@@ -1,5 +1,5 @@
 {
- "_source": "Comfy-Org/ComfyUI nodes.py @ 5cc4b87 (2026-10-16)",
+ "_source": "Comfy-Org/ComfyUI nodes.py and comfy_extras/nodes_mask.py @ 5cc4b87 (2026-10-16)",
  "CLIPTextEncode": {
   "required": {
    "text": "STRING",
@@ -125,6 +125,43 @@
    "image": "IMAGE"
   },
   "optional": {},
+  "returns": [
+   "IMAGE"
+  ]
+ },
+ "ImageToMask": {
+  "required": {
+   "image": "IMAGE",
+   "channel": "COMBO"
+  },
+  "optional": {},
+  "returns": [
+   "MASK"
+  ]
+ },
+ "EmptyImage": {
+  "required": {
+   "width": "INT",
+   "height": "INT",
+   "batch_size": "INT",
+   "color": "INT"
+  },
+  "optional": {},
+  "returns": [
+   "IMAGE"
+  ]
+ },
+ "ImageCompositeMasked": {
+  "required": {
+   "destination": "IMAGE",
+   "source": "IMAGE",
+   "x": "INT",
+   "y": "INT",
+   "resize_source": "BOOLEAN"
+  },
+  "optional": {
+   "mask": "MASK"
+  },
   "returns": [
    "IMAGE"
   ]
