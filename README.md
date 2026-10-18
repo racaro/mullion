@@ -7,7 +7,7 @@ For anyone who draws spaces: architects, interior designers, contractors, kitche
 | Locale | Tagline |
 | --- | --- |
 | English (default) | Sketch it, see it. |
-| Spanish | Si lo veo, lo creo. |
+| Spanish | Si no lo veo, lo creo. |
 
 ## Architecture
 

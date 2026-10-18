@@ -4,6 +4,7 @@
   "signIn": "Sign in with Google",
   "signOut": "Sign out",
   "signInFailed": "Sign-in did not work. Please try again.",
+  "notInvited": "Mullion is in a private pilot and this account is not invited yet.",
   "newRender": "New render",
   "sketch": "Sketch",
   "sketchHint": "Photo or scan taken straight on, without shadows, cropped to the drawing. PNG or JPG.",
@@ -24,5 +25,12 @@
   "status.done": "Done",
   "status.failed": "Failed",
   "download": "Download",
-  "error": "Something went wrong."
+  "error": "Something went wrong.",
+  "pilotNote": "Private pilot: access is by invitation.",
+  "account": "Account",
+  "theme": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "language": "Language"
 }

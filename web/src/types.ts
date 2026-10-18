@@ -11,6 +11,8 @@ export interface Env {
   GOOGLE_CLIENT_SECRET: string;
   CF_ACCESS_CLIENT_ID?: string;
   CF_ACCESS_CLIENT_SECRET?: string;
+  ALLOWED_EMAILS?: string; // who may sign in: emails, @domains or *; empty = nobody
+  MAX_RENDERS_PER_DAY?: string;
   DEV_LOGIN?: string; // "true" only in .dev.vars
 }
 

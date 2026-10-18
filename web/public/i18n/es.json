@@ -1,9 +1,10 @@
 {
-  "tagline": "Si lo veo, lo creo.",
+  "tagline": "Si no lo veo, lo creo.",
   "intro": "Sube el boceto de un espacio y obtén vistas fotorrealistas que respetan tu distribución.",
   "signIn": "Entrar con Google",
   "signOut": "Salir",
   "signInFailed": "No se pudo iniciar sesión. Inténtalo de nuevo.",
+  "notInvited": "Mullion está en un piloto privado y esta cuenta todavía no tiene invitación.",
   "newRender": "Nuevo render",
   "sketch": "Boceto",
   "sketchHint": "Foto o escaneo de frente, sin sombras, recortado al dibujo. PNG o JPG.",
@@ -24,5 +25,12 @@
   "status.done": "Listo",
   "status.failed": "Ha fallado",
   "download": "Descargar",
-  "error": "Algo ha ido mal."
+  "error": "Algo ha ido mal.",
+  "pilotNote": "Piloto privado: el acceso es por invitación.",
+  "account": "Cuenta",
+  "theme": "Tema",
+  "themeSystem": "Sistema",
+  "themeLight": "Claro",
+  "themeDark": "Oscuro",
+  "language": "Idioma"
 }

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 190" role="img" aria-label="Mullion">
+  <title>Mullion</title>
+  <style>
+    /* Puffer wordmark: fat rounded letters (a thick round-joined stroke), lit from the top left.
+       logo-dark.svg is the same drawing with dark-theme colors: keep the two in step. */
+    .word { fill: #3d7a66; stroke: #3d7a66; }
+    .outline { fill: #111111; stroke: #111111; }
+  </style>
+  <defs>
+    <filter id="puff" x="-8%" y="-30%" width="116%" height="170%" color-interpolation-filters="sRGB">
+      <!-- Height map from the letter shape: soft edges read as a rounded, inflated surface. -->
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9" result="height"/>
+      <feSpecularLighting in="height" surfaceScale="9" specularConstant="1.1" specularExponent="18" lighting-color="#ffffff" result="shine">
+        <fePointLight x="120" y="-160" z="260"/>
+      </feSpecularLighting>
+      <feComposite in="shine" in2="SourceAlpha" operator="in" result="shineInside"/>
+      <feDiffuseLighting in="height" surfaceScale="9" diffuseConstant="1" lighting-color="#ffffff" result="shade">
+        <feDistantLight azimuth="235" elevation="55"/>
+      </feDiffuseLighting>
+      <feComposite in="SourceGraphic" in2="shade" operator="arithmetic" k1="0.5" k2="0.55" k3="0" k4="0" result="shaded"/>
+      <feComposite in="shaded" in2="shineInside" operator="arithmetic" k1="0" k2="1" k3="0.85" k4="0" result="lit"/>
+      <feComposite in="lit" in2="SourceAlpha" operator="in" result="body"/>
+    </filter>
+    <filter id="shadow" x="-8%" y="-30%" width="116%" height="170%">
+      <feDropShadow dx="0" dy="10" stdDeviation="9" flood-color="#10201b" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <!-- Black outline: the same word with a wider stroke, drawn underneath. -->
+  <text class="outline" x="330" y="102" text-anchor="middle" dominant-baseline="middle"
+        font-family="ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', 'Nunito', system-ui, sans-serif"
+        font-size="128" font-weight="900" stroke-width="32" stroke-linejoin="round"
+        textLength="560" lengthAdjust="spacing" filter="url(#shadow)">Mullion</text>
+  <text class="word" x="330" y="102" text-anchor="middle" dominant-baseline="middle"
+        font-family="ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', 'Nunito', system-ui, sans-serif"
+        font-size="128" font-weight="900" stroke-width="18" stroke-linejoin="round" paint-order="stroke"
+        textLength="560" lengthAdjust="spacing" filter="url(#puff)">Mullion</text>
+</svg>

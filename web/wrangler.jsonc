@@ -7,8 +7,7 @@
   "compatibility_date": "2026-10-01",
   "assets": { "directory": "public", "binding": "ASSETS", "run_worker_first": ["/api/*", "/auth/*"] },
   "d1_databases": [
-    // database_id: fill in after `wrangler d1 create mullion`
-    { "binding": "DB", "database_name": "mullion", "database_id": "00000000-0000-0000-0000-000000000000", "migrations_dir": "migrations" }
+    { "binding": "DB", "database_name": "mullion", "database_id": "c71d302e-8aa8-4b2d-921e-c95e7028d3d4", "migrations_dir": "migrations" }
   ],
   "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "mullion" }],
   "queues": {
@@ -21,7 +20,10 @@
     "COMFY_URL": "https://comfy.example.com",
     "COMFY_CHECKPOINT": "v1-5-pruned-emaonly.safetensors",
     "COMFY_CONTROLNET": "control_v11p_sd15_lineart.pth",
-    "CONTROLNET_STRENGTH": "0.8"
+    "CONTROLNET_STRENGTH": "0.8",
+    // Private pilot: only these Google accounts may sign in (emails or @domain, comma-separated).
+    "ALLOWED_EMAILS": "",
+    "MAX_RENDERS_PER_DAY": "20"
   }
   // Secrets (wrangler secret put …): GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
   // CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET (Access service token for the Tunnel).

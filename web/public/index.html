@@ -5,32 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mullion</title>
   <link rel="stylesheet" href="/styles.css">
+  <script src="/theme.js"></script>
   <script type="module" src="/app.js"></script>
 </head>
-<body>
+<body hidden>
   <header class="bar">
-    <a class="brand" href="/">Mullion</a>
-    <div class="bar-actions">
-      <select id="locale" aria-label="Language">
-        <option value="en">English</option>
-        <option value="es">Español</option>
-      </select>
-      <form id="sign-out" method="post" action="/auth/logout" hidden>
-        <span id="user-name"></span>
-        <button type="submit" class="link" data-i18n="signOut"></button>
-      </form>
+    <a class="brand" href="/" aria-label="Mullion">
+      <img class="logo-light" src="/logo.svg" alt="" width="660" height="190">
+      <img class="logo-dark" src="/logo-dark.svg" alt="" width="660" height="190">
+    </a>
+    <div class="account">
+      <button type="button" id="account-button" class="account-button" data-i18n-label="account" aria-haspopup="true" aria-expanded="false" aria-controls="account-menu">
+        <span class="avatar" id="avatar"></span>
+        <span class="account-name" id="user-name"></span>
+        <svg class="chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div id="account-menu" class="account-menu" hidden>
+        <div class="account-head">
+          <span class="avatar large" id="avatar-large"></span>
+          <div><strong id="menu-name"></strong><span id="menu-email"></span></div>
+        </div>
+        <hr class="menu-divider">
+        <fieldset class="menu-group">
+          <legend data-i18n="theme"></legend>
+          <div class="segmented" role="radiogroup" data-i18n-label="theme">
+            <label><input type="radio" name="theme" value="system"><span data-i18n="themeSystem"></span></label>
+            <label><input type="radio" name="theme" value="light"><span data-i18n="themeLight"></span></label>
+            <label><input type="radio" name="theme" value="dark"><span data-i18n="themeDark"></span></label>
+          </div>
+        </fieldset>
+        <fieldset class="menu-group">
+          <legend data-i18n="language"></legend>
+          <div class="segmented" role="radiogroup">
+            <label><input type="radio" name="locale" value="en"><span>English</span></label>
+            <label><input type="radio" name="locale" value="es"><span>Español</span></label>
+          </div>
+        </fieldset>
+        <hr class="menu-divider">
+        <form method="post" action="/auth/logout">
+          <button type="submit" class="menu-item" data-i18n="signOut"></button>
+        </form>
+      </div>
     </div>
   </header>
 
   <main>
-    <section id="welcome" class="welcome" hidden>
-      <h1 data-i18n="tagline"></h1>
-      <p data-i18n="intro"></p>
-      <p id="signin-failed" class="error" data-i18n="signInFailed" hidden></p>
-      <a class="button" href="/auth/google" data-i18n="signIn"></a>
-    </section>
-
-    <section id="studio" hidden>
+    <section id="studio">
       <form id="new-render" class="panel">
         <h2 data-i18n="newRender"></h2>
 

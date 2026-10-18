@@ -1,6 +1,7 @@
 // Google sign-in (OAuth 2.0 authorization code flow with PKCE) and cookie sessions in D1.
 import { Hono, type Context } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import { isAllowedEmail } from "./security";
 import type { AppEnv, Env, User } from "./types";
 
 const SESSION_COOKIE = "mullion_session";
@@ -34,7 +35,7 @@ auth.get("/google/callback", async (c) => {
   const [state, verifier] = (getCookie(c, FLOW_COOKIE) ?? "").split(".");
   deleteCookie(c, FLOW_COOKIE, { path: "/auth" });
   const code = c.req.query("code");
-  if (!state || !verifier || !code || c.req.query("state") !== state) return c.redirect("/?signin=failed");
+  if (!state || !verifier || !code || c.req.query("state") !== state) return c.redirect("/login?signin=failed");
 
   const token = await fetch(GOOGLE_TOKEN, {
     method: "POST",
@@ -47,14 +48,15 @@ auth.get("/google/callback", async (c) => {
       code_verifier: verifier,
     }),
   });
-  if (!token.ok) return c.redirect("/?signin=failed");
+  if (!token.ok) return c.redirect("/login?signin=failed");
   // The ID token comes straight from Google over TLS, so its claims can be read without
   // checking the signature (OpenID Connect Core, section 3.1.3.7); we still check who it is for.
   const claims = decodeJwtPayload(((await token.json()) as { id_token: string }).id_token);
   const issuers = ["https://accounts.google.com", "accounts.google.com"];
   if (claims.aud !== c.env.GOOGLE_CLIENT_ID || !issuers.includes(claims.iss) || !claims.email_verified) {
-    return c.redirect("/?signin=failed");
+    return c.redirect("/login?signin=failed");
   }
+  if (!isAllowedEmail(claims.email, c.env.ALLOWED_EMAILS)) return c.redirect("/login?signin=not_invited");
   const user = await upsertUser(c.env, {
     googleSub: claims.sub, email: claims.email, name: claims.name ?? "", picture: claims.picture ?? "",
     locale: String(claims.locale ?? "").startsWith("es") ? "es" : "en",
@@ -75,7 +77,7 @@ auth.post("/logout", async (c) => {
   const value = getCookie(c, SESSION_COOKIE);
   if (value) await c.env.DB.prepare("DELETE FROM sessions WHERE id = ?").bind(await sha256(value, "hex")).run();
   deleteCookie(c, SESSION_COOKIE, { path: "/" });
-  return c.redirect("/");
+  return c.redirect("/login");
 });
 
 /** The signed-in user, or null. */
@@ -98,6 +100,7 @@ async function upsertUser(env: Env, u: { googleSub: string; email: string; name:
 
 async function startSession(c: Context<AppEnv>, userId: string): Promise<void> {
   const value = randomToken();
+  await c.env.DB.prepare("DELETE FROM sessions WHERE expires_at <= datetime('now')").run(); // housekeeping
   await c.env.DB.prepare(`INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, datetime('now', ?))`)
     .bind(await sha256(value, "hex"), userId, `+${SESSION_DAYS} days`).run();
   setCookie(c, SESSION_COOKIE, value, { httpOnly: true, secure: true, sameSite: "Lax", path: "/", maxAge: SESSION_DAYS * 86400 });

@@ -2,9 +2,8 @@
 import { Hono } from "hono";
 import { currentUser } from "./auth";
 import { InvalidBrief, LOCALES, catalog, fitSize, imageSize, parseBrief } from "./engine";
+import { LIMITS, PUBLIC_RENDER_ERROR, checkImageSides, isAllowedEmail } from "./security";
 import type { AppEnv, RenderRow } from "./types";
-
-const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
 export const api = new Hono<AppEnv>();
 
@@ -13,6 +12,8 @@ api.get("/catalog", (c) => c.json(catalog(c.req.query("locale") ?? "en")));
 api.use("*", async (c, next) => {
   const user = await currentUser(c);
   if (!user) return c.json({ error: "Sign in first." }, 401);
+  // Checked on every request, so removing someone from ALLOWED_EMAILS takes effect at once.
+  if (!isAllowedEmail(user.email, c.env.ALLOWED_EMAILS)) return c.json({ error: "This account is not invited." }, 403);
   c.set("user", user);
   await next();
 });
@@ -28,6 +29,19 @@ api.put("/me/locale", async (c) => {
 
 /** Upload a sketch (and optionally an erase mask) with a brief, and queue its render. */
 api.post("/renders", async (c) => {
+  const length = Number(c.req.header("Content-Length") ?? NaN);
+  if (!(length <= LIMITS.maxRequestBytes)) return c.json({ error: "Images must be 10 MB or smaller." }, 413);
+  const usage = await c.env.DB.prepare(
+    `SELECT COALESCE(SUM(status IN ('queued', 'running')), 0) AS pending,
+            COALESCE(SUM(created_at > datetime('now', '-1 day')), 0) AS today
+     FROM renders WHERE user_id = ?`,
+  ).bind(c.get("user").id).first<{ pending: number; today: number }>();
+  const perDay = Number(c.env.MAX_RENDERS_PER_DAY ?? LIMITS.maxPerDay);
+  if (usage && usage.pending >= LIMITS.maxPending) {
+    return c.json({ error: `Wait until one of your ${LIMITS.maxPending} pending renders finishes.` }, 429);
+  }
+  if (usage && usage.today >= perDay) return c.json({ error: `You can make ${perDay} renders a day. Try again tomorrow.` }, 429);
+
   const form = await c.req.formData();
   const sketch = form.get("sketch");
   const mask = form.get("mask");
@@ -37,13 +51,15 @@ api.post("/renders", async (c) => {
   try {
     brief = parseBrief(JSON.parse(String(form.get("brief") ?? "{}")));
     for (const file of [sketch, mask]) {
-      if (file instanceof File && file.size > MAX_UPLOAD_BYTES) throw new InvalidBrief("Images must be 10 MB or smaller.");
+      if (file instanceof File && file.size > LIMITS.maxUploadBytes) throw new InvalidBrief("Images must be 10 MB or smaller.");
     }
     sketchBytes = new Uint8Array(await sketch.arrayBuffer());
-    size = fitSize(...imageSize(sketchBytes));
+    const sides = imageSize(sketchBytes);
+    checkImageSides(...sides);
+    size = fitSize(...sides);
     if (mask instanceof File) {
       maskBytes = new Uint8Array(await mask.arrayBuffer());
-      imageSize(maskBytes); // must be a PNG or JPEG too
+      checkImageSides(...imageSize(maskBytes)); // must be a PNG or JPEG too
     }
   } catch (e) {
     return c.json({ error: e instanceof Error ? e.message : "Invalid request." }, 400);
@@ -103,7 +119,7 @@ function publicRender(row: RenderRow) {
     brief: JSON.parse(row.brief),
     width: row.width,
     height: row.height,
-    error: row.error,
+    error: row.status === "failed" ? PUBLIC_RENDER_ERROR : null,
     createdAt: row.created_at,
     sketchUrl: `${base}/sketch`,
     maskUrl: row.mask_key ? `${base}/mask` : null,

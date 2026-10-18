@@ -1,36 +1,22 @@
-// Mullion web app: sign-in state, the render form with the erase brush, and the render list.
+// Mullion web app: the render form with the erase brush, and the render list. Signed-out
+// visitors are sent to /login.
+import { applyLocale, preferredLocale, saveLocale } from "/i18n.js";
 
 const $ = (selector) => document.querySelector(selector);
-const LOCALES = ["en", "es"];
 const POLL_MS = 5000;
 
 let strings = {};
 let locale = "en";
 let user = null;
 
-// ---------- locale -------------------------------------------------------------------
-function initialLocale() {
-  try {
-    const saved = localStorage.getItem("locale");
-    if (LOCALES.includes(saved)) return saved;
-  } catch {}
-  return navigator.language?.toLowerCase().startsWith("es") ? "es" : "en";
-}
-
 async function setLocale(next, { save = false } = {}) {
-  locale = LOCALES.includes(next) ? next : "en";
-  strings = await (await fetch(`/i18n/${locale}.json`)).json();
-  document.documentElement.lang = locale;
-  $("#locale").value = locale;
-  document.querySelectorAll("[data-i18n]").forEach((el) => (el.textContent = strings[el.dataset.i18n] ?? el.dataset.i18n));
+  [locale, strings] = await applyLocale(next);
   if (save) {
-    try { localStorage.setItem("locale", locale); } catch {}
-    if (user) fetch("/api/me/locale", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ locale }) });
+    saveLocale(locale);
+    fetch("/api/me/locale", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ locale }) });
   }
-  if (user) {
-    await fillOptions();
-    await refreshRenders();
-  }
+  await fillOptions();
+  await refreshRenders();
 }
 
 // ---------- brief options --------------------------------------------------------------
@@ -183,24 +169,60 @@ function renderCard(r) {
   return li;
 }
 
+// ---------- account menu ---------------------------------------------------------------
+// Google profile photos come from this host only (it is allowed in the CSP); anything else shows initials.
+const AVATAR_HOST = "https://lh3.googleusercontent.com/";
+
+function initials(user) {
+  const words = (user.name || user.email).split(/[\s@.]+/).filter(Boolean);
+  return words.slice(0, 2).map((w) => w[0].toUpperCase()).join("");
+}
+
+function fillAvatar(el, user) {
+  el.textContent = initials(user);
+  if (!user.picture?.startsWith(AVATAR_HOST)) return;
+  const img = Object.assign(document.createElement("img"), { src: user.picture, alt: "", referrerPolicy: "no-referrer" });
+  img.addEventListener("load", () => el.replaceChildren(img));
+}
+
+function initAccountMenu() {
+  const button = $("#account-button");
+  const menu = $("#account-menu");
+  const open = (next) => {
+    menu.hidden = !next;
+    button.setAttribute("aria-expanded", String(next));
+  };
+  button.addEventListener("click", () => open(menu.hidden));
+  document.addEventListener("click", (e) => !menu.hidden && !e.target.closest(".account") && open(false));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !menu.hidden) {
+      open(false);
+      button.focus();
+    }
+  });
+  window.MullionTheme.bind(menu);
+  menu.querySelectorAll('input[name="locale"]').forEach((radio) =>
+    radio.addEventListener("change", () => radio.checked && setLocale(radio.value, { save: true })));
+}
+
 // ---------- start ------------------------------------------------------------------------
 async function start() {
   const me = await fetch("/api/me");
-  user = me.ok ? await me.json() : null;
-  $("#welcome").hidden = !!user;
-  $("#studio").hidden = !user;
-  $("#sign-out").hidden = !user;
-  if (user) $("#user-name").textContent = user.name || user.email;
-  $("#signin-failed").hidden = new URLSearchParams(location.search).get("signin") !== "failed";
-
-  let saved = null;
-  try { saved = localStorage.getItem("locale"); } catch {}
-  await setLocale(saved ?? user?.locale ?? initialLocale());
-  $("#locale").addEventListener("change", (e) => setLocale(e.target.value, { save: true }));
-  if (user) {
-    initEraser();
-    $("#new-render").addEventListener("submit", submitRender);
+  if (!me.ok) {
+    location.replace(me.status === 403 ? "/login?signin=not_invited" : "/login"); // 403: removed from the pilot
+    return;
   }
+  user = await me.json();
+  $("#user-name").textContent = user.name || user.email;
+  $("#menu-name").textContent = user.name || user.email;
+  $("#menu-email").textContent = user.email;
+  fillAvatar($("#avatar"), user);
+  fillAvatar($("#avatar-large"), user);
+  document.body.hidden = false;
+  await setLocale(preferredLocale(user.locale));
+  initAccountMenu();
+  initEraser();
+  $("#new-render").addEventListener("submit", submitRender);
 }
 
 start();
