@@ -1,6 +1,6 @@
-// Light, dark or system theme. A classic script loaded in <head> so the theme is set before the
-// first paint (a module would run too late and the page would flash). "system" sets nothing and
-// lets prefers-color-scheme decide.
+// Light or dark theme. A classic script loaded in <head> so the theme is set before the first
+// paint (a module would run too late and the page would flash). Until the viewer picks one with
+// the sun/moon button, "system" sets nothing and lets prefers-color-scheme decide.
 (() => {
   const THEMES = ["system", "light", "dark"];
 
@@ -24,15 +24,25 @@
     return next;
   }
 
-  /** Wire the name="theme" radios inside root to the saved theme. */
-  function bind(root) {
-    const radios = root.querySelectorAll('input[name="theme"]');
-    radios.forEach((radio) => {
-      radio.checked = radio.value === get();
-      radio.addEventListener("change", () => radio.checked && set(radio.value));
+  const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+  /** The theme on screen: the viewer's choice, or the system's. */
+  function effective() {
+    const theme = get();
+    return theme === "system" ? (darkQuery.matches ? "dark" : "light") : theme;
+  }
+
+  /** The sun/moon button: a toggle named "Dark mode", pressed while the page is dark. */
+  function bindToggle(button) {
+    const update = () => button.setAttribute("aria-pressed", String(effective() === "dark"));
+    button.addEventListener("click", () => {
+      set(effective() === "dark" ? "light" : "dark");
+      update();
     });
+    darkQuery.addEventListener("change", update);
+    update();
   }
 
   apply(get());
-  window.MullionTheme = { THEMES, get, set, bind };
+  window.MullionTheme = { THEMES, get, set, effective, bindToggle };
 })();

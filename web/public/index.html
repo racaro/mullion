@@ -5,46 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mullion</title>
   <link rel="stylesheet" href="/styles.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <script src="/theme.js"></script>
   <script type="module" src="/app.js"></script>
 </head>
 <body hidden>
   <header class="bar">
     <a class="brand" href="/" aria-label="Mullion">
+      <!-- A window divided by mullions: the name, drawn. -->
+      <span class="window-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
       <img class="logo-light" src="/logo.svg" alt="" width="660" height="190">
       <img class="logo-dark" src="/logo-dark.svg" alt="" width="660" height="190">
     </a>
-    <div class="account">
-      <button type="button" id="account-button" class="account-button" data-i18n-label="account" aria-haspopup="true" aria-expanded="false" aria-controls="account-menu">
-        <span class="avatar" id="avatar"></span>
-        <span class="account-name" id="user-name"></span>
-        <svg class="chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="bar-actions">
+      <button type="button" class="theme-toggle" id="theme-toggle" data-i18n-label="darkMode" aria-pressed="false">
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>
       </button>
-      <div id="account-menu" class="account-menu" hidden>
-        <div class="account-head">
-          <span class="avatar large" id="avatar-large"></span>
-          <div><strong id="menu-name"></strong><span id="menu-email"></span></div>
+      <div class="account">
+        <button type="button" id="account-button" class="account-button" data-i18n-label="account" aria-haspopup="true" aria-expanded="false" aria-controls="account-menu">
+          <span class="avatar" id="avatar"></span>
+          <span class="account-name" id="user-name"></span>
+          <svg class="chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div id="account-menu" class="account-menu" hidden>
+          <div class="account-head">
+            <span class="avatar large" id="avatar-large"></span>
+            <div><strong id="menu-name"></strong><span id="menu-email"></span></div>
+          </div>
+          <hr class="menu-divider">
+          <fieldset class="menu-group">
+            <legend data-i18n="language"></legend>
+            <div id="menu-lang" data-lang-picker></div>
+          </fieldset>
+          <hr class="menu-divider">
+          <form method="post" action="/auth/logout">
+            <button type="submit" class="menu-item" data-i18n="signOut"></button>
+          </form>
         </div>
-        <hr class="menu-divider">
-        <fieldset class="menu-group">
-          <legend data-i18n="theme"></legend>
-          <div class="segmented" role="radiogroup" data-i18n-label="theme">
-            <label><input type="radio" name="theme" value="system"><span data-i18n="themeSystem"></span></label>
-            <label><input type="radio" name="theme" value="light"><span data-i18n="themeLight"></span></label>
-            <label><input type="radio" name="theme" value="dark"><span data-i18n="themeDark"></span></label>
-          </div>
-        </fieldset>
-        <fieldset class="menu-group">
-          <legend data-i18n="language"></legend>
-          <div class="segmented" role="radiogroup">
-            <label><input type="radio" name="locale" value="en"><span>English</span></label>
-            <label><input type="radio" name="locale" value="es"><span>Español</span></label>
-          </div>
-        </fieldset>
-        <hr class="menu-divider">
-        <form method="post" action="/auth/logout">
-          <button type="submit" class="menu-item" data-i18n="signOut"></button>
-        </form>
       </div>
     </div>
   </header>

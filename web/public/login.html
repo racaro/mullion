@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mullion · Sign in</title>
   <link rel="stylesheet" href="/styles.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <script src="/theme.js"></script>
   <script type="module" src="/login.js"></script>
 </head>
@@ -12,27 +13,28 @@
   <header class="login-bar">
     <span></span>
     <div class="bar-actions">
-      <div class="segmented" role="radiogroup" data-i18n-label="theme">
-        <label><input type="radio" name="theme" value="system"><span data-i18n="themeSystem"></span></label>
-        <label><input type="radio" name="theme" value="light"><span data-i18n="themeLight"></span></label>
-        <label><input type="radio" name="theme" value="dark"><span data-i18n="themeDark"></span></label>
-      </div>
-      <select id="locale" aria-label="Language">
-        <option value="en">English</option>
-        <option value="es">Español</option>
-      </select>
+      <button type="button" class="theme-toggle" id="theme-toggle" data-i18n-label="darkMode" aria-pressed="false">
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>
+      </button>
+      <div id="login-lang" data-lang-picker></div>
     </div>
   </header>
 
   <main class="login">
-    <!-- A window divided by mullions: the name, drawn. -->
-    <div class="login-art" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-
     <section class="login-card">
-      <img class="logo-hero logo-light" src="/logo.svg" alt="Mullion" width="660" height="190">
-      <img class="logo-hero logo-dark" src="/logo-dark.svg" alt="Mullion" width="660" height="190">
-      <h1 data-i18n="tagline"></h1>
-      <p class="muted" data-i18n="intro"></p>
+      <div class="login-brand">
+        <img class="logo-hero logo-light" src="/logo.svg" alt="Mullion" width="660" height="190">
+        <img class="logo-hero logo-dark" src="/logo-dark.svg" alt="Mullion" width="660" height="190">
+      </div>
+      <h1 class="sketch tagline"><span data-i18n="tagline"></span>
+        <!-- Hand-drawn underline: two loose strokes, like Excalidraw's rough lines. -->
+        <svg class="scribble" viewBox="0 0 300 16" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M4 9c38-4 77-5 118-3s88 4 130-1c14-2 28-2 44 0"/>
+          <path d="M10 12c45-3 92-3 140-1 40 2 82 2 140-3"/>
+        </svg>
+      </h1>
+      <p class="sketch intro" data-i18n="intro"></p>
 
       <p id="signin-failed" class="notice error" data-i18n="signInFailed" hidden></p>
       <p id="not-invited" class="notice error" data-i18n="notInvited" hidden></p>

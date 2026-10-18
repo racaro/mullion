@@ -1,6 +1,6 @@
 // Mullion web app: the render form with the erase brush, and the render list. Signed-out
 // visitors are sent to /login.
-import { applyLocale, preferredLocale, saveLocale } from "/i18n.js";
+import { applyLocale, mountLanguagePicker, preferredLocale, saveLocale } from "/i18n.js";
 
 const $ = (selector) => document.querySelector(selector);
 const POLL_MS = 5000;
@@ -200,9 +200,6 @@ function initAccountMenu() {
       button.focus();
     }
   });
-  window.MullionTheme.bind(menu);
-  menu.querySelectorAll('input[name="locale"]').forEach((radio) =>
-    radio.addEventListener("change", () => radio.checked && setLocale(radio.value, { save: true })));
 }
 
 // ---------- start ------------------------------------------------------------------------
@@ -219,8 +216,10 @@ async function start() {
   fillAvatar($("#avatar"), user);
   fillAvatar($("#avatar-large"), user);
   document.body.hidden = false;
+  mountLanguagePicker($("#menu-lang"), (choice) => setLocale(choice, { save: true }));
   await setLocale(preferredLocale(user.locale));
   initAccountMenu();
+  window.MullionTheme.bindToggle($("#theme-toggle"));
   initEraser();
   $("#new-render").addEventListener("submit", submitRender);
 }

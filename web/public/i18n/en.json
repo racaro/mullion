@@ -28,9 +28,9 @@
   "error": "Something went wrong.",
   "pilotNote": "Private pilot: access is by invitation.",
   "account": "Account",
-  "theme": "Theme",
-  "themeSystem": "System",
-  "themeLight": "Light",
-  "themeDark": "Dark",
-  "language": "Language"
+  "language": "Language",
+  "darkMode": "Dark mode",
+  "greeting": "Hello",
+  "languageEnglish": "English",
+  "languageSpanish": "Spanish"
 }

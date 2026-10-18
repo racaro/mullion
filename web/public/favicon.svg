@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- The window mark from the app header: an arched frame split into four panes by mullions. -->
+  <style>
+    .frame { fill: #1d1d1b; }
+    @media (prefers-color-scheme: dark) { .frame { fill: #ecebe7; } }
+  </style>
+  <defs>
+    <linearGradient id="glass" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#2f5d50"/>
+      <stop offset="1" stop-color="#c7d8d1"/>
+    </linearGradient>
+  </defs>
+  <path class="frame" d="M4 31V13a12 12 0 0 1 24 0v18z"/>
+  <path fill="url(#glass)" d="M6.6 28.4V13a9.4 9.4 0 0 1 18.8 0v15.4z"/>
+  <rect class="frame" x="15" y="2" width="2" height="28"/>
+  <rect class="frame" x="4" y="17.5" width="24" height="2"/>
+</svg>

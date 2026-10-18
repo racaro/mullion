@@ -28,9 +28,9 @@
   "error": "Algo ha ido mal.",
   "pilotNote": "Piloto privado: el acceso es por invitación.",
   "account": "Cuenta",
-  "theme": "Tema",
-  "themeSystem": "Sistema",
-  "themeLight": "Claro",
-  "themeDark": "Oscuro",
-  "language": "Idioma"
+  "language": "Idioma",
+  "darkMode": "Modo oscuro",
+  "greeting": "Hola",
+  "languageEnglish": "Inglés",
+  "languageSpanish": "Español"
 }
