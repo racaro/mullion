@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { currentUser } from "./auth";
 import { InvalidBrief, LOCALES, catalog, fitSize, imageSize, parseBrief } from "./engine";
 import { LIMITS, PUBLIC_RENDER_ERROR, checkImageSides, isAllowedEmail } from "./security";
-import type { AppEnv, RenderRow } from "./types";
+import type { AppEnv, Env, RenderRow } from "./types";
 
 export const api = new Hono<AppEnv>();
 
@@ -31,16 +31,11 @@ api.put("/me/locale", async (c) => {
 api.post("/renders", async (c) => {
   const length = Number(c.req.header("Content-Length") ?? NaN);
   if (!(length <= LIMITS.maxRequestBytes)) return c.json({ error: "Images must be 10 MB or smaller." }, 413);
-  const usage = await c.env.DB.prepare(
-    `SELECT COALESCE(SUM(status IN ('queued', 'running')), 0) AS pending,
-            COALESCE(SUM(created_at > datetime('now', '-1 day')), 0) AS today
-     FROM renders WHERE user_id = ?`,
-  ).bind(c.get("user").id).first<{ pending: number; today: number }>();
-  const perDay = Number(c.env.MAX_RENDERS_PER_DAY ?? LIMITS.maxPerDay);
-  if (usage && usage.pending >= LIMITS.maxPending) {
-    return c.json({ error: `Wait until one of your ${LIMITS.maxPending} pending renders finishes.` }, 429);
+  const usage = await renderUsage(c.env, c.get("user").id);
+  if (usage.pending >= usage.maxPending) {
+    return c.json({ error: `Wait until one of your ${usage.maxPending} pending renders finishes.` }, 429);
   }
-  if (usage && usage.today >= perDay) return c.json({ error: `You can make ${perDay} renders a day. Try again tomorrow.` }, 429);
+  if (usage.today >= usage.perDay) return c.json({ error: `You can make ${usage.perDay} renders a day. Try again tomorrow.` }, 429);
 
   const form = await c.req.formData();
   const sketch = form.get("sketch");
@@ -79,6 +74,9 @@ api.post("/renders", async (c) => {
   return c.json(await findRender(c.env.DB, id, c.get("user").id), 201);
 });
 
+/** How many renders the user has pending and made today, against their limits. */
+api.get("/usage", async (c) => c.json(await renderUsage(c.env, c.get("user").id)));
+
 api.get("/renders", async (c) => {
   const { results } = await c.env.DB.prepare("SELECT * FROM renders WHERE user_id = ? ORDER BY created_at DESC LIMIT 50")
     .bind(c.get("user").id).all<RenderRow>();
@@ -101,6 +99,20 @@ api.get("/renders/:id/:file{sketch|mask|result}", async (c) => {
     headers: { "Content-Type": object.httpMetadata?.contentType ?? "image/png", "Cache-Control": "private, max-age=3600" },
   });
 });
+
+async function renderUsage(env: Env, userId: string) {
+  const row = await env.DB.prepare(
+    `SELECT COALESCE(SUM(status IN ('queued', 'running')), 0) AS pending,
+            COALESCE(SUM(created_at > datetime('now', '-1 day')), 0) AS today
+     FROM renders WHERE user_id = ?`,
+  ).bind(userId).first<{ pending: number; today: number }>();
+  return {
+    pending: row?.pending ?? 0,
+    today: row?.today ?? 0,
+    maxPending: LIMITS.maxPending,
+    perDay: Number(env.MAX_RENDERS_PER_DAY ?? LIMITS.maxPerDay),
+  };
+}
 
 function imageType(bytes: Uint8Array): string {
   return bytes[0] === 0x89 ? "image/png" : "image/jpeg"; // imageSize() already accepted it as one of the two

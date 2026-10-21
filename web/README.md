@@ -73,7 +73,10 @@ Run once, logged in with `npx wrangler login`:
 | `src/comfy.ts` | ComfyUI client, port of `engine/client.py`, with the Access service token |
 | `src/engine.ts` | Port of `engine/brief.py` and `engine/workflow.py` |
 | `src/generated/engine.json` | Brief options, written by `engine/export.py` — do not edit |
-| `public/` | The web app (no build step); strings in `public/i18n/<locale>.json` |
+| `public/app/` | App shell: boot (`main.js`), header and navigation (`shell.js`), hash router, shared state |
+| `public/features/<screen>/` | One folder per screen: `create` (sketch + brief), `gallery` (streaming-style rows and detail), `settings` |
+| `public/lib/` | Shared pieces: API client, DOM helpers, language picker (`i18n.js`), theme (`theme.js`, loaded in `<head>`) |
+| `public/login.html` | Sign-in page; strings for every page in `public/i18n/<locale>.json` |
 | `migrations/` | D1 schema |
 | `test/` | Port checked against reference cases from the Python engine, ComfyUI client |
 

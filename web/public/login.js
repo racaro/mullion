@@ -1,5 +1,5 @@
 // Login page: already signed in -> the app; otherwise show why the last sign-in failed, if it did.
-import { applyLocale, mountLanguagePicker, preferredLocale, saveLocale } from "/i18n.js";
+import { applyLocale, mountLanguagePicker, preferredLocale, saveLocale } from "/lib/i18n.js";
 
 const me = await fetch("/api/me");
 if (me.ok) location.replace("/");

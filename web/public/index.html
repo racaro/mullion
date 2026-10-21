@@ -2,97 +2,176 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Mullion</title>
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/app.css">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <script src="/theme.js"></script>
-  <script type="module" src="/app.js"></script>
+  <script src="/lib/theme.js"></script>
+  <script type="module" src="/app/main.js"></script>
 </head>
 <body hidden>
-  <header class="bar">
-    <a class="brand" href="/" aria-label="Mullion">
+  <a class="skip-link" href="#main" data-i18n="skip"></a>
+
+  <!-- Header: brand on the left; theme, language and the user's menu on the right. -->
+  <header class="app-header">
+    <a class="brand" href="#/create" aria-label="Mullion">
       <!-- A window divided by mullions: the name, drawn. -->
       <span class="window-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
       <img class="logo-light" src="/logo.svg" alt="" width="660" height="190">
       <img class="logo-dark" src="/logo-dark.svg" alt="" width="660" height="190">
     </a>
-    <div class="bar-actions">
+    <div class="header-actions">
       <button type="button" class="theme-toggle" id="theme-toggle" data-i18n-label="darkMode" aria-pressed="false">
         <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77"/></svg>
         <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>
       </button>
+      <div id="header-lang" data-lang-picker></div>
       <div class="account">
-        <button type="button" id="account-button" class="account-button" data-i18n-label="account" aria-haspopup="true" aria-expanded="false" aria-controls="account-menu">
+        <button type="button" id="account-button" class="account-button" aria-haspopup="menu" aria-expanded="false" aria-controls="account-menu">
           <span class="avatar" id="avatar"></span>
           <span class="account-name" id="user-name"></span>
           <svg class="chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <div id="account-menu" class="account-menu" hidden>
-          <div class="account-head">
+        <div id="account-menu" class="account-menu" role="menu" hidden>
+          <div class="account-head" role="none">
             <span class="avatar large" id="avatar-large"></span>
             <div><strong id="menu-name"></strong><span id="menu-email"></span></div>
           </div>
-          <hr class="menu-divider">
-          <fieldset class="menu-group">
-            <legend data-i18n="language"></legend>
-            <div id="menu-lang" data-lang-picker></div>
-          </fieldset>
-          <hr class="menu-divider">
-          <form method="post" action="/auth/logout">
-            <button type="submit" class="menu-item" data-i18n="signOut"></button>
+          <hr class="menu-divider" role="none">
+          <a class="menu-item" role="menuitem" href="#/settings" data-icon="settings"><span data-i18n="nav.settings"></span></a>
+          <form method="post" action="/auth/logout" role="none">
+            <button type="submit" class="menu-item" role="menuitem" data-icon="logout"><span data-i18n="logOut"></span></button>
           </form>
         </div>
       </div>
     </div>
   </header>
 
-  <main>
-    <section id="studio">
-      <form id="new-render" class="panel">
-        <h2 data-i18n="newRender"></h2>
+  <!-- Navigation: a collapsible sidebar on wide screens, a bottom tab bar on phones. -->
+  <nav class="app-nav" id="app-nav" data-i18n-label="navLabel">
+    <ul>
+      <li><a href="#/create" data-route="create" data-icon="create"><span data-i18n="nav.create"></span></a></li>
+      <li><a href="#/gallery" data-route="gallery" data-icon="gallery"><span data-i18n="nav.gallery"></span></a></li>
+    </ul>
+    <button type="button" class="nav-collapse" id="nav-collapse" data-icon="panel"><span data-i18n="collapse"></span></button>
+  </nav>
 
-        <label class="field">
-          <span data-i18n="sketch"></span>
-          <input type="file" name="sketch" accept="image/png,image/jpeg" required>
-          <small data-i18n="sketchHint"></small>
-        </label>
-
-        <div id="eraser" class="eraser" hidden>
-          <div class="eraser-head">
-            <strong data-i18n="erase"></strong>
-            <button type="button" id="clear-erase" class="link" data-i18n="clearErase"></button>
+  <main id="main" class="app-main" tabindex="-1">
+    <!-- Create: the whole body is the workspace. Sketch on the left, the brief on the right. -->
+    <section data-screen="create" class="screen create" hidden>
+      <form id="new-render" class="create-form" novalidate>
+        <div class="workspace" id="workspace">
+          <input type="file" id="sketch-input" class="visually-hidden" name="sketch" accept="image/png,image/jpeg">
+          <label class="dropzone" id="dropzone" for="sketch-input">
+            <span class="dropzone-icon" data-icon="upload"></span>
+            <strong class="sketch" data-i18n="dropTitle"></strong>
+            <span class="muted" data-i18n="dropHint"></span>
+          </label>
+          <div class="canvas-stage" id="canvas-stage" hidden>
+            <canvas id="sketch-canvas"></canvas>
           </div>
-          <small data-i18n="eraseHint"></small>
-          <canvas id="sketch-canvas"></canvas>
+          <div class="workspace-toolbar" id="workspace-toolbar" hidden>
+            <span class="brush-hint" data-icon="eraser"><span data-i18n="eraseHint"></span></span>
+            <button type="button" class="tool-button" id="clear-erase" data-i18n="clearErase"></button>
+            <button type="button" class="tool-button" id="change-sketch" data-i18n="changeSketch"></button>
+          </div>
         </div>
 
-        <div class="grid">
-          <label class="field"><span data-i18n="room"></span><select name="room"></select></label>
-          <label class="field"><span data-i18n="style"></span><select name="style"></select></label>
-          <label class="field"><span data-i18n="lighting"></span><select name="lighting"></select></label>
-        </div>
-
-        <fieldset class="field">
-          <legend data-i18n="materials"></legend>
-          <div id="materials" class="chips"></div>
-        </fieldset>
-
-        <label class="field">
-          <span data-i18n="details"></span>
-          <textarea name="details" rows="2" maxlength="300"></textarea>
-        </label>
-
-        <p id="form-error" class="error" hidden></p>
-        <button type="submit" class="button" data-i18n="submit"></button>
+        <aside class="brief">
+          <h1 class="brief-title" data-i18n="newRender"></h1>
+          <fieldset class="brief-group">
+            <legend data-i18n="room"></legend>
+            <div class="chip-row" id="room-options"></div>
+          </fieldset>
+          <fieldset class="brief-group">
+            <legend data-i18n="style"></legend>
+            <div class="chip-row" id="style-options"></div>
+          </fieldset>
+          <fieldset class="brief-group">
+            <legend data-i18n="lighting"></legend>
+            <div class="chip-row" id="lighting-options"></div>
+          </fieldset>
+          <fieldset class="brief-group">
+            <legend data-i18n="materials"></legend>
+            <div class="chip-row" id="material-options"></div>
+          </fieldset>
+          <label class="brief-group" for="details">
+            <span class="legend" data-i18n="details"></span>
+            <textarea id="details" name="details" rows="3" maxlength="300"></textarea>
+          </label>
+          <p id="form-error" class="form-error" role="alert" hidden></p>
+          <button type="submit" class="primary-button" id="submit-render" data-i18n="submit"></button>
+        </aside>
       </form>
+    </section>
 
-      <section class="renders">
-        <h2 data-i18n="renders"></h2>
-        <p id="empty" class="muted" data-i18n="empty" hidden></p>
-        <ul id="render-list"></ul>
-      </section>
+    <!-- Gallery: streaming-app layout. A hero for the latest render, then rows that scroll sideways. -->
+    <section data-screen="gallery" class="screen gallery" hidden>
+      <div id="gallery-hero"></div>
+      <div id="gallery-rows" class="gallery-rows"></div>
+    </section>
+
+    <!-- Settings: one panel per topic. -->
+    <section data-screen="settings" class="screen settings" hidden>
+      <h1 data-i18n="nav.settings"></h1>
+      <div class="settings-grid">
+        <section class="settings-panel" aria-labelledby="profile-title">
+          <h2 id="profile-title" data-i18n="profileTitle"></h2>
+          <div class="profile-row">
+            <span class="avatar xlarge" id="settings-avatar"></span>
+            <div><strong id="settings-name"></strong><span class="muted" id="settings-email"></span></div>
+          </div>
+          <p class="muted small" data-i18n="profileNote"></p>
+        </section>
+
+        <section class="settings-panel" aria-labelledby="appearance-title">
+          <h2 id="appearance-title" data-i18n="appearance"></h2>
+          <div class="segmented" role="radiogroup" data-i18n-label="appearance">
+            <label><input type="radio" name="theme" value="light"><span data-i18n="themeLight"></span></label>
+            <label><input type="radio" name="theme" value="dark"><span data-i18n="themeDark"></span></label>
+            <label><input type="radio" name="theme" value="system"><span data-i18n="themeSystem"></span></label>
+          </div>
+        </section>
+
+        <section class="settings-panel" aria-labelledby="usage-title">
+          <h2 id="usage-title" data-i18n="usage"></h2>
+          <div class="meter-list" id="usage-meters"></div>
+          <p class="muted small" data-i18n="usageNote"></p>
+        </section>
+
+        <section class="settings-panel" aria-labelledby="session-title">
+          <h2 id="session-title" data-i18n="session"></h2>
+          <p class="muted small" data-i18n="sessionNote"></p>
+          <form method="post" action="/auth/logout">
+            <button type="submit" class="secondary-button" data-i18n="logOut"></button>
+          </form>
+        </section>
+      </div>
     </section>
   </main>
+
+  <!-- Render detail: the render and its sketch, compared with a slider. -->
+  <dialog class="detail" id="detail" aria-labelledby="detail-title">
+    <div class="detail-body">
+      <header class="detail-head">
+        <div><h2 id="detail-title"></h2><span class="muted" id="detail-meta"></span></div>
+        <button type="button" class="icon-button" id="detail-close" data-i18n-label="close" data-icon="close"></button>
+      </header>
+      <div class="compare" id="compare">
+        <img id="compare-sketch" alt="">
+        <img id="compare-render" alt="">
+        <input type="range" id="compare-range" min="0" max="100" value="50" data-i18n-label="compareLabel">
+        <span class="compare-tag left" data-i18n="compareSketch"></span>
+        <span class="compare-tag right" data-i18n="compareRender"></span>
+      </div>
+      <div class="detail-foot">
+        <ul class="detail-chips" id="detail-chips"></ul>
+        <a class="primary-button" id="detail-download" download data-icon="download"><span data-i18n="download"></span></a>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" hidden></div>
 </body>
 </html>
